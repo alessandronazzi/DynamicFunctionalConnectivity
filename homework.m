@@ -1,5 +1,7 @@
 %%
 
+tic
+
 clc;
 clearvars;
 
@@ -8,11 +10,11 @@ load timeseries_all.mat
 
 %% SLIDING-WINDOWS %%
 
-n_sbj = 10; % = size(timeseries_all,3)
+n_sbj = 1; % = size(timeseries_all,3)
 % width_w parametro funzione
 top_w = 1; % = width_w - (width_w - 1)
 bot_w = 86; % = width_w
-n_window = size(timeseries_all,2) - bot_w; 
+n_window = size(timeseries_all,2) - bot_w+1; % total number of time windows 
 
 Mcorrg = []; %preallocate zeros to decrease runtime
 Mcorrs = [];
@@ -36,10 +38,10 @@ end
 eigv_mat = [];
 mat_dim = length(Mcorrg) * n_sbj;
 
-for i=1:mat_dim
-    [autvet, eigval] = eig(Mcorrg{i});
-    eigv_mat = [eigv_mat; {autvet(:,1) * transpose(autvet(:,1))}];
-end
+	for i=1:mat_dim
+		[autvet, ~] = eig(Mcorrg{i});
+		eigv_mat = [eigv_mat; {autvet(:,1) * transpose(autvet(:,1))}];
+	end
 
 eigv_mat = reshape(eigv_mat,length(Mcorrg),n_sbj);
 
@@ -64,7 +66,7 @@ for a = 1:20
 end
 
 
-
+toc
 
 
 
