@@ -1,13 +1,14 @@
 
 function [FC_dynamics1,FC_dynamics2,Fraction_times,Dwell_times,Transition_prob] = FC_dyn(idx)
 
+    disp('Computing clustering metrics');
     % FRACTION TIMES %
     
     [C,~,ic] = unique(idx);
     idx_counts = accumarray(ic,1);
     num_clusters = length(C);
 
-    Fraction_times = zeros([5 1]);
+    Fraction_times = zeros([ num_clusters 1]);
     
     for i=1:length(idx_counts)
         Fraction_times(i) = idx_counts(i)/length(idx)*100;
@@ -99,11 +100,17 @@ function [FC_dynamics1,FC_dynamics2,Fraction_times,Dwell_times,Transition_prob] 
         Transition_prob = [Transition_prob, (transitions(i)/(length(seq_idx)-1))*100];
     end
     
-    Transition_prob = transpose(reshape(Transition_prob,[5 5]));
+    Transition_prob = transpose(reshape(Transition_prob,[num_clusters num_clusters ]));
     
     % DISPLAY RESULTS %
     
-    State = {'DFS1';'DFS2';'DFS3';'DFS4';'DFS5'};
+    State = {};
+    
+    for i=1:num_clusters
+        State{i}=['DFS',num2str(i)];
+    end    
+    
+    State = State';
     
     FC_dynamics1 = table(State,Fraction_times,Dwell_times);
     FC_dynamics2 = table(Transition_prob,'RowNames',State);

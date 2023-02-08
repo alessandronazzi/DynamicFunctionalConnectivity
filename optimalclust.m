@@ -1,8 +1,11 @@
 function [mean_sil,std_sil] = optimalclust(upt_vmat,Npoints,Nrand,Nclustering)
 
+   disp('Clustering');
+
     idx = {};
     
     for i=1:Nclustering
+        disp(sprintf('k=%d',i));
         idx{i} = [];
         [idxs,~,upts] = K_cluster(upt_vmat,i);
         idx{i} = idxs;
@@ -10,7 +13,9 @@ function [mean_sil,std_sil] = optimalclust(upt_vmat,Npoints,Nrand,Nclustering)
     
     sil = {};
     
+    disp('Compute silhouette');
     for i=2:Nclustering
+        disp(sprintf('k=%d',i));
         sil{i}=[];
         indices = idx{i};
         for k=1:Nrand
@@ -26,7 +31,7 @@ function [mean_sil,std_sil] = optimalclust(upt_vmat,Npoints,Nrand,Nclustering)
         std_sil(i)=std(sil{i},'omitnan');
     end
 
-    errorbar(mean_sil,std_sil);
+    %errorbar(mean_sil,std_sil);
 
 end    
 

@@ -1,23 +1,24 @@
 
 function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
 
+    disp('compute pricipal eigenvectors')
     ex_check = exist('n_sbj','var');
     if ex_check == 0
         n_sbj = size(timeseries_all,3);
-    else
-    
-        top_w = 1; 
-        bot_w = width_w;
-        n_window = size(timeseries_all,2) - bot_w + 1; 
+    end
+            
+    top_w = 1; 
+    bot_w = width_w;
+    n_window = size(timeseries_all,2) - bot_w + 1; 
         
-        Mcorrg = []; 
-        Mcorrs = [];
+    Mcorrg = []; 
+    Mcorrs = [];
         
-        % SLIDING-WINDOWS %
-        
-        for c=1:n_sbj
-            SBJn = timeseries_all(:,:,c);
-            for i=1:n_window
+    % SLIDING-WINDOWS %
+       
+    for c=1:n_sbj
+       SBJn = timeseries_all(:,:,c);
+        for i=1:n_window
                 timewindow_corr = corr(SBJn(:,top_w:bot_w)');
                 Mcorrs = [Mcorrs; {timewindow_corr}];
                 top_w = top_w+1;
@@ -26,7 +27,7 @@ function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
             Mcorrg = [Mcorrg Mcorrs];
             Mcorrs = [];
             top_w = 1;
-            bot_w = 86;
+            bot_w = width_w;
         end
         
         % EIGENDECOMPOSITION AND CORRESPONDING MATRICES %
@@ -52,7 +53,6 @@ function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
         end
         
         upt_vmat = reshape(upt_vmat,length(Mcorrg),n_sbj);
-    end 
 end    
 
 
