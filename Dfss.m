@@ -1,13 +1,12 @@
 function [DFSs] = Dfss(centroids)
 
     DFSs = [];
-    C = eye(200);
+    C = zeros(200);
 
     for i=1:size(centroids,1)
         c = centroids(i,:);
         C(triu(true(200),1)) = c;
-        U = triu(C,1);
-        C=C+U';
+        C=C+C';
         DFSs = [DFSs, {C}];
     end
     
