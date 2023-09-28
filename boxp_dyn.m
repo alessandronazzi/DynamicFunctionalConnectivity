@@ -16,11 +16,4 @@ function [ft,dt] = boxp_dyn(n_sbj,idx,l,width_w)
     ft = ft';
     dt = dt';
     
-    figure()
-    boxplot(ft)
-    title('Fraction times')
-    
-    figure()
-    boxplot(dt)
-    title('Dwell times')
 end    
