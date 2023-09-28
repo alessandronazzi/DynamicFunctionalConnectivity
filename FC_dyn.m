@@ -1,130 +1,75 @@
 
-function [FC_dynamics1,FC_dynamics2,Fraction_times,Dwell_times,Transition_prob] = FC_dyn(idx)
-
+function [Fraction_times,Dwell_times,Transition_prob,table_seq] = FC_dyn(idx,K)
     disp('Computing clustering metrics');
     % FRACTION TIMES %
     
-    [C,~,ic] = unique(idx);
-    idx_counts = accumarray(ic,1);
-    num_clusters = length(C);
-
-    Fraction_times = zeros([ num_clusters 1]);
+    Fraction_times = histcounts(idx)'/length(idx)*100;
     
-    for i=1:length(idx_counts)
-        Fraction_times(i) = idx_counts(i)/length(idx)*100;
-    end 
 
     % DWELL TIMES %
-    
-    ideal_dwell = zeros([1 length(idx)]);
-    DFS_sequence = [];
-    seq_num = 1;
-    
-    for i=1:length(idx)
-        if i == length(idx)
-            ideal_dwell(seq_num) = ideal_dwell(seq_num)+1;
-            if idx(end) == idx(end-1)
-                DFS_sequence = [DFS_sequence, ideal_dwell(seq_num)];
-            else
-                seq_num = seq_num+1;
-            end
-        else
-            ideal_dwell(seq_num) = ideal_dwell(seq_num)+1;
-            if idx(i) == idx(i+1) 
-                continue
-            else
-                DFS_sequence = [DFS_sequence, ideal_dwell(seq_num)];
-                seq_num = seq_num+1;
-            end
-        end
-    end   
-    
-    idx_plus = [idx', idx(end)-1];
-    diffidx = diff(idx_plus);
-    seq_idx = idx(diffidx~=0);
-    
-    DFS_sequence = DFS_sequence';
-    [seq_sorted, I] = sort(seq_idx);
-    table_seq = [seq_sorted, DFS_sequence(I)];
+   
 
-    Dwell_times = [zeros(num_clusters,1)];
-    seq_num = 1;
-    c = 0;
+    didx = [0 find(diff(idx))'];
+    DFS_sequence=[diff(didx) length(idx)-didx(end)];
+    seq_idx=idx(didx+1);
+    Dwell_times = zeros(K,1);
 
-    for i=1:length(table_seq)
-         Dwell_times(seq_num) = Dwell_times(seq_num) + table_seq(i,2);
-         c = c+1;
-        if i == length(table_seq)           
-             Dwell_times(seq_num) = Dwell_times(seq_num)/c;
-        else
-            if table_seq(i) == table_seq(i+1)
-                continue            
-            else
-                Dwell_times(seq_num) = Dwell_times(seq_num)/c;
-                c = 0;
-                seq_num = seq_num+1;
-            end
+    for i=1:K
+        cc=find(seq_idx==i);
+        if isempty(cc)
+            Dwell_times(i)=0;
+        else    
+            Dwell_times(i)=mean(DFS_sequence(cc));
         end    
     end
-%%
+
+
     % TRANSITION PROBABILITY %
     
-    transitions = [zeros(1,num_clusters*num_clusters)];
+    transitions = [zeros(1,K*K)];
     seq_num = 1;
     
-    for i=1:num_clusters
-        for j=1:num_clusters
+    for i=1:K
+        for j=1:K
              if i == j
                  seq_num = seq_num + 1;
                  continue
              else    
-                 for k=1:length(seq_idx)
-                     if k == length(seq_idx)
-                         seq_num = seq_num + 1;
-                         continue
-                     else    
-                        if seq_idx(k) == i && seq_idx(k+1) == j
-                            transitions(seq_num) = transitions(seq_num) + 1;
-                            continue
-                        end
+                 for k=1:length(seq_idx)-1
+                     if seq_idx(k) == i && seq_idx(k+1) == j
+                        transitions(seq_num) = transitions(seq_num) + 1;
                      end   
                  end
+                 seq_num = seq_num + 1;
              end    
         end
     end    
     
     
-    Transition_prob = [];
+    Transition_prob = zeros(K,K);
         
     for i=1:length(transitions)
-        Transition_prob = [Transition_prob, (transitions(i)/(length(seq_idx)-1))*100];
+	ii=floor((i-1)/K)+1;
+	jj=mod((i-1),5)+1;
+        Transition_prob(ii,jj)=transitions(i)/(length(seq_idx)-1)*100;
     end
-    
-    Transition_prob = transpose(reshape(Transition_prob,[num_clusters num_clusters ]));
+   
+
+    Transition_prob =Transition_prob';
     
     % DISPLAY RESULTS %
     
-    State = {};
-    
-    for i=1:num_clusters
-        State{i}=['DFS',num2str(i)];
-    end    
-    
-    State = State';
-    
-    FC_dynamics1 = table(State,Fraction_times,Dwell_times);
-    FC_dynamics2 = table(Transition_prob,'RowNames',State);
+%     State = {};
+%     
+%     for i=1:K
+%         State{i}=['DFS',num2str(i)];
+%     end    
+%     
+%     State = State';
+%     
+%     FC_dynamics1 = table(State,Fraction_times,Dwell_times);
+%     FC_dynamics2 = table(Transition_prob,'RowNames',State);
 end    
-        
-
-
-
-
-
-
-
-
-
 
 
 
