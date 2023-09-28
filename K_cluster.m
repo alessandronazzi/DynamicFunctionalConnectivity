@@ -1,10 +1,11 @@
 
-function [idx,centroids,upts] = K_cluster(upt_vmat,num_cluster)
-     
-    upt = cell2mat(upt_vmat);
-    uptr = reshape(upt,[length(upt_vmat{1}),length(upt_vmat),size(upt_vmat,2)]);
-    upts = transpose(reshape(uptr,[length(upt_vmat{1}),length(upt_vmat)*size(upt_vmat,2)]));
+function [idx,centroids,upts] = K_cluster(upt_vmat,K,distance)
+    upts = transpose(upt_vmat);
     
-    [idx, centroids] = kmeans(upts,num_cluster);
+    if strcmp(distance,'Euclidean')
+        [idx, centroids] = kmeans(upts,K,'MaxIter',1000);
+    else
+        [idx, centroids] = kmeans(upts,K,'Distance','correlation','MaxIter',1000);
+    end
 
-end    
+end
