@@ -3,4 +3,5 @@ This repository contains the code employed for the Master's thesis titled "Dynam
 
 Language: MATLAB
 
-* Functions/: main functions and scripts 
+* Functions/: main functions and scripts
+* *  
