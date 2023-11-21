@@ -41,30 +41,11 @@ function [DFSs] = Dfss(centroids,regions,atlas)
 
     if ex_check == 1  && strcmp(atlas,'sch')
 
-        % b=zeros(100,1);
-        % c=1;
-        % k=51;
-        % 
-        % for i=1:100
-        %     if mod(i,2)==0
-        %         b(i)=k;
-        %         k=k+1;
-        %     else
-        %         b(i)=c;
-        %         c=c+1;
-        %     end
-        % end
-
          b=[1:9 51:58 10:15 59:66 16:23 67:73 24:30 74:78 31:33 79 80 34:37 81:89 38:50 90:100];
        
         for i=1:length(DFSs)
             name = "DFS"+i;
             dfss = DFSs{i};
-
-            % for c=1:size(dfss,1)
-            %     dfss(1:100,c) = dfss(b);
-            % end
-
             dfss(1:100,:) = dfss(b,:);
             dfss(:,1:100) = dfss(:,b);
             dfss(101:119,:) = dfss(100+reshaff_inv,:);
@@ -75,7 +56,6 @@ function [DFSs] = Dfss(centroids,regions,atlas)
     
             nexttile([5 5])
             imagesc(dfss, [-0.01 0.01])
-            %axis image
             pbaspect([1 1 1])
             title(name)
             xticks(ticks_sch)
@@ -105,7 +85,6 @@ function [DFSs] = Dfss(centroids,regions,atlas)
             dfss(101:119,:) = dfss(100+reshaff_inv,:);
             dfss(:,101:119) = dfss(:,100+reshaff_inv);
             imagesc(dfss(:,101:end), [-0.01 0.01])
-            %axis image
             pbaspect([1 1 1])
             xticks(1:19)
             yticks(ticks_sch)
@@ -131,7 +110,6 @@ function [DFSs] = Dfss(centroids,regions,atlas)
             mymap = [0 0 0; 1 1 1; 0 0 0];
             C = [1 2 3; 3 3 3];
             pcolor(X,Y,C);
-            %axis image
             pbaspect([18 1 1])
             colormap(leg,mymap);
             xticks([22 69]);
@@ -157,7 +135,6 @@ function [DFSs] = Dfss(centroids,regions,atlas)
     
             nexttile([5 5])
             imagesc(dfss, [-0.005 0.005])
-            %axis image
             pbaspect([1 1 1])
             title(name)
             xticks(ticks_gl)
