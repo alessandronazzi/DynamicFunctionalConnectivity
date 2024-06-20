@@ -1,14 +1,18 @@
 
-function [Fraction_times,Dwell_times,Transition_prob,table_seq] = FC_dyn(idx,K)
+ function [Fraction_times,Dwell_times,Transition_prob,table_seq] = FC_dyn(idx,K)
     disp('Computing clustering metrics');
+
     % FRACTION TIMES %
     
     Fraction_times = histcounts(idx)'/length(idx)*100;
-    
+    if length(Fraction_times)<K
+        ft=zeros(K,1);
+        ft(2:end)=Fraction_times;
+        Fraction_times=ft;
+    end    
 
     % DWELL TIMES %
-   
-
+  
     didx = [0 find(diff(idx))'];
     DFS_sequence=[diff(didx) length(idx)-didx(end)];
     seq_idx=idx(didx+1);
@@ -56,25 +60,6 @@ function [Fraction_times,Dwell_times,Transition_prob,table_seq] = FC_dyn(idx,K)
    
 
     Transition_prob =Transition_prob';
-    
-    % DISPLAY RESULTS %
-    
-%     State = {};
-%     
-%     for i=1:K
-%         State{i}=['DFS',num2str(i)];
-%     end    
-%     
-%     State = State';
-%     
-%     FC_dynamics1 = table(State,Fraction_times,Dwell_times);
-%     FC_dynamics2 = table(Transition_prob,'RowNames',State);
 end    
 
-
-
-
-
-
-    
 
