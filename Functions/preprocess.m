@@ -1,3 +1,4 @@
+
 function [timeseries_all] = preprocess(varargin)
 
     nargin=length(varargin);
@@ -5,7 +6,7 @@ function [timeseries_all] = preprocess(varargin)
 
     atlas=varargin{2};
 
-    if(strcmp(atlas,'GordonLaumann') || strcmp(atlas,'TianS1') || strcmp(atlas,'TianS4'))
+    if(strcmp(atlas,'GordonLaumann') || strcmp(atlas,'TianS1') || strcmp(atlas,'TianS4') || strcmp(atlas,'Buckner') || strcmp(atlas,'Morel') )
         load('/home/allegra/hcp_padova/results/GordonLaumann/NET_info_reduction2.mat');
     end
     
@@ -106,10 +107,10 @@ function [timeseries_all] = preprocess(varargin)
             end
 
         end  
-        
+         
 	timeseries_all = timeseries_red;
     
-    elseif strcmp(atlas,'TianS1') || strcmp(atlas,'TianS4')    
+    elseif strcmp(atlas,'TianS1') || strcmp(atlas,'TianS4') || strcmp(atlas,'Buckner') || strcmp(atlas,'Morel') 
         atlas_90 = NET_new.final_index(1:71);
    
         conv_areas = [];
@@ -139,11 +140,7 @@ function [timeseries_all] = preprocess(varargin)
 		timeseries_red(71+r,:,i) = sbj(324+r,:);
             end
         end  
-
-	
         timeseries_all = timeseries_red;
-   
     end
-
 end
       
