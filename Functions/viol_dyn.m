@@ -1,4 +1,4 @@
-function [ft,dt] = boxp_dyn(n_sbj,idx,l,width_w,K)
+function [ft,dt] = viol_dyn(n_sbj,idx,l,width_w,K)
 
     n_window = 2*(l/2 - width_w + 1);
     ss = zeros(1, n_sbj) + n_window;
