@@ -1,5 +1,5 @@
-function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
-%function [mat_vect] = projLEigv(timeseries_all,width_w,n_sbj)
+
+function [upt_vmat,eigv_mat] = projLEigv(timeseries_all,width_w,n_sbj) 
     disp('compute pricipal eigenvectors')
     ex_check = exist('n_sbj','var');
     if ex_check == 0
@@ -8,28 +8,19 @@ function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
 
     n_timepoints = size(timeseries_all,2);
     n_regions = size(timeseries_all,1);
-    
     n_window = n_timepoints/2 - width_w + 1;
 
-    % SLIDING-WINDOWS %
+%% SLIDING-WINDOW TEMPORAL CORRELATION %%
+    
+    eigv_mat = zeros(n_window*2,n_sbj,n_regions,n_regions);
 
-    % TO SAVE MATRICES RECONSTRUCTED FROM EIGV %
-    eigv_mat = zeros(n_window*2,n_sbj,n_regions,n_regions); 
-    
-    % TO SAVE PRINCIPAL EIGENVECTORS %
-%     mat_vect = cell(1,n_sbj); 
-%     for l=1:n_sbj
-%         mat_vect{l} = zeros(n_regions,n_window);
-%     end            
-    
     for c=1:n_sbj
         SBJn = timeseries_all(:,:,c);
-      
         Mcorrs=[];
         disp(sprintf('collect sliding windows subject %d',c));   
-
     	top_w = 1; 
     	bot_w = width_w;
+
         for i=1:n_window
                 timewindow_corr = corr(SBJn(:,top_w:bot_w)');
                 Mcorrs = [Mcorrs; {timewindow_corr}];
@@ -47,8 +38,7 @@ function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
                 bot_w = bot_w+1;
         end
 
-        
-        % EIGENDECOMPOSITION AND CORRESPONDING MATRICES %
+%% EIGENDECOMPOSITION %%
        
         disp(sprintf('compute eigendecomposition subject %d',c));   
    
@@ -58,13 +48,10 @@ function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
            end
            [autvet, ~, ~] = svd(Mcorrs{i});
            eigv_mat(i,c,:,:) = autvet(:,1)* transpose(autvet(:,1));
-           %eigv_mat(:,i) = autvet(:,1); % TO SAVE EIGENVECTOR
         end
-%         mat_vect{c} = eigv_mat; % TO SAVE EIGENVECTOR
-%         eigv_mat = zeros(n_regions,n_window); % TO SAVE EIGENVECTOR
     end
        
-    % UPPER-TRIANGULAR VECTORIZATION %
+%% UPPER-TRIANGULAR VECTORIZATION %%
         
     upt_vmat = [];
     
@@ -76,5 +63,3 @@ function [upt_vmat] = projLEigv(timeseries_all,width_w,n_sbj)
         end
     end         
 end    
-
-
