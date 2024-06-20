@@ -10,7 +10,7 @@ Functions/: main functions and scripts
 * K_cluster.m: performs a K-means clustering with specified parameters
 * Modul.m: computes classical Newman-Girvan modularity (credits E. le Martelot)
 * behave.m: fits GLM with fraction and dwell times as predictors and different behavioral indices as dependent variables
-* boxp_dyn.m: returns fraction and dwell times for each subject
+* viol_dyn.m: plots fraction and dwell times distributions 
 * cluster_metrics.m: computes and plots functional biomarkers associated with each DFSs
 * compute_nmi.m: computes nmi scores for different conditions
 * confm_cent.m: plots confusion matrices of the correlations between the centroids of different conditions
